@@ -1,0 +1,34 @@
+import statsd
+import psutil
+import argparse
+
+def cpu_metrics():
+        cpu = psutil.cpu_times_percent(interval=2)
+        print('system.cpu.idle', cpu.idle)
+        print('system.cpu.user', cpu.user)
+        print('system.cpu.guest', cpu.guest)
+        print('system.cpu.iowait', cpu.iowait)
+        print('system.cpu.stolen', cpu.steal)
+        print('system.cpu.system', cpu.system)
+
+def memory_metrics():
+        mem_virt = psutil.virtual_memory()
+        mem_swap = psutil.swap_memory()
+        print("virtual total", mem_virt.total)
+        print("virtual used", mem_virt.used)
+        print("virtual free", mem_virt.free)
+        print("virtual shared", mem_virt.shared)
+        print("swap total", mem_swap.total)
+        print("swap used", mem_swap.used)
+        print("swap free", mem_swap.free)
+
+p=argparse.ArgumentParser()
+p.add_argument('metric', choices=['mem','cpu'], 
+		help='type "mem" or "cpu" parameter to display relevant metrics' )
+def choose_argument(args):
+        if args.metric == 'mem':
+                memory_metrics()
+        if args.metric == 'cpu':
+                cpu_metrics()
+args=p.parse_args()
+choose_argument(args)
